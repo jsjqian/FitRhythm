@@ -64,5 +64,12 @@
         android:layout_alignTop="@+id/push_ups"
         android:layout_marginTop="70dp"
         android:layout_centerHorizontal="true"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/back_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back_button"/>
 
 </RelativeLayout>

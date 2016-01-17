@@ -1,6 +1,7 @@
 package com.example.jack.fitrhythmapp;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -52,6 +53,15 @@ public class ChooseExercise extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ChooseExercise.this, ChooseIntensity.class);
                 intent.putExtra("type", "sit_ups");
+                startActivity(intent);
+            }
+        });
+
+        ImageButton back = (ImageButton)findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChooseExercise.this, MainActivity.class);
                 startActivity(intent);
             }
         });

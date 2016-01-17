@@ -50,6 +50,15 @@ public class ChooseIntensity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ImageButton back = (ImageButton)findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChooseIntensity.this, ChooseExercise.class);
+                startActivity(intent);
+            }
+        });
     }
 
 }

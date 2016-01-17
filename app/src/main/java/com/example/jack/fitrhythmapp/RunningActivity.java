@@ -1,5 +1,6 @@
 package com.example.jack.fitrhythmapp;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +20,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
@@ -31,6 +33,7 @@ import org.w3c.dom.Text;
 import java.lang.Math;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RunningActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -45,24 +48,40 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
     private final float NOISE = (float) 2.0;
     private double threshold = 2;
     private double max_mag;
+    private String workout;
+    private ArrayList<String> quotes = new ArrayList<String>();
+    private Random rand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_running);
-
+        quotes.add("''Pain is weakness leaving the body.''");
+        quotes.add("''Sore today, strong tomorrow.''");
+        quotes.add("''Harder, better, faster, stronger.''");
+        quotes.add("''Better sore than sorry.''");
+        quotes.add("''Sore. The most satisfying pain.''");
+        String quote;
+        int num = (int)(Math.random() * 5);
+        quote = quotes.get(num);
+        TextView quotey = (TextView)findViewById(R.id.quote);
+        quotey.setText(quote);
         switch(getIntent().getSerializableExtra("type").toString()) {
             case("walking"):
                 max_mag = 4;
+                workout = "walking";
                 break;
             case("running"):
                 max_mag = 22;
+                workout = "running";
                 break;
             case("push_ups"):
                 max_mag = 5;
+                workout = "push ups";
                 break;
             case("sit_ups"):
                 max_mag = 3.5;
+                workout = "sit ups";
                 break;
         }
 
@@ -77,10 +96,23 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 break;
         }
 
+        TextView type = (TextView)findViewById(R.id.type);
+        TextView intense = (TextView)findViewById(R.id.intensity);
+        type.setText(workout);
+        intense.setText(getIntent().getSerializableExtra("intensity").toString());
+
         mInitialized = false;
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Button restart = (Button)findViewById(R.id.restart_button);
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RunningActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
         final Button startstop = (Button)findViewById(R.id.start_stop_button);
         startstop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -115,9 +147,7 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                 double percent = Double.valueOf(progress);
-                TextView vol = (TextView) findViewById(R.id.max_volume);
                 max_Volume = percent * 0.01 * maxVolume;
-                vol.setText(Double.toString(percent));
             }
 
             @Override
@@ -148,9 +178,6 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void onSensorChanged(SensorEvent event) {
-        TextView tvX= (TextView)findViewById(R.id.x_axis);
-        TextView tvY= (TextView)findViewById(R.id.y_axis);
-        TextView tvZ= (TextView)findViewById(R.id.z_axis);
         ImageView iv = (ImageView)findViewById(R.id.image);
         float x = event.values[0];
         float y = event.values[1];
@@ -185,12 +212,6 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 }
                 magnitude_total = total/15;
                 magnitudes.clear();
-                TableLayout table = (TableLayout)findViewById(R.id.magnitude_table);
-                TableRow row = new TableRow(this);
-                TextView text = new TextView(this);
-                text.setText(Double.toString(magnitude_total));
-                row.addView(text);
-                table.addView(row);
                 final Button startstop = (Button)findViewById(R.id.start_stop_button);
                 if(startstop.getText().toString() == "stop workout") {
                     current_mag = magnitude_total;
@@ -207,12 +228,8 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
                 int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                 int volume = (int) (currentVolume *100 / maxVolume);
-                TextView vol = (TextView) findViewById(R.id.current_volume);
-                vol.setText(Double.toString(volume));
             }
         }
-        tvX.setText(Double.toString(max_mag));
-        tvY.setText(Integer.toString((int)current_mag));
-        tvZ.setText(Integer.toString((int)(current_mag * 100 /max_mag)));
+
     }
 }
