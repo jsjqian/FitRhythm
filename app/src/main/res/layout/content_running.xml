@@ -125,32 +125,33 @@
         android:layout_marginBottom="5dp" />
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="10dp"
+        android:layout_height="5dp"
         android:id="@+id/dumb_white_line"
         android:layout_above="@+id/set_max"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/dumb_white_line"
+        android:background="@drawable/white_line"
         android:layout_marginBottom="5dp" />
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="10dp"
+        android:layout_height="5dp"
         android:id="@+id/dumb_white_line2"
         android:layout_above="@+id/seek_bar"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/dumb_white_line"
-        android:layout_marginBottom="10dp" />
+        android:background="@drawable/white_line"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"/>
 
     <Button
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_width="250dp"
         android:id="@+id/start_stop_button"
-        android:text="start"
-        android:textSize="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/dumb_white_line"
-        android:layout_marginBottom="200dp"
+        android:text="start workout"
+        android:textAllCaps="false"
+        android:textSize="35dp"
         android:textColor="#FF3E96"
         android:background="#FFFFFF"
-        />
+        android:layout_alignBottom="@+id/dumb_white_line"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

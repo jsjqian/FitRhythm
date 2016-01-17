@@ -44,11 +44,39 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
     private ArrayList<Double> magnitudes = new ArrayList<Double>();
     private final float NOISE = (float) 2.0;
     private double threshold = 2;
+    private double max_mag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_running);
+
+        switch(getIntent().getSerializableExtra("type").toString()) {
+            case("walking"):
+                max_mag = 4;
+                break;
+            case("running"):
+                max_mag = 10;
+                break;
+            case("push_ups"):
+                max_mag = 2;
+                break;
+            case("sit_ups"):
+                max_mag = 3;
+                break;
+        }
+
+        switch(getIntent().getSerializableExtra("intensity").toString()) {
+            case("easy"):
+                max_mag *= .75;
+                break;
+            case("medium"):
+                break;
+            case("hard"):
+                max_mag *= 1.25;
+                break;
+        }
+
         mInitialized = false;
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -59,15 +87,15 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                 switch (startstop.getText().toString()) {
-                    case ("start"): {
-                        startstop.setText("stop");
+                    case ("start workout"): {
+                        startstop.setText("stop workout");
                         int volume = (int) (max_Volume * .6);
                         audio.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
                         previous_mag = magnitude_total;
                         break;
                     }
-                    case ("stop"): {
-                        startstop.setText("start");
+                    case ("stop workout"): {
+                        startstop.setText("start workout");
                         audio.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
                         break;
                     }
@@ -131,9 +159,9 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
             mLastX = x;
             mLastY = y;
             mLastZ = z;
-            tvX.setText("0.0");
-            tvY.setText("0.0");
-            tvZ.setText("0.0");
+//            tvX.setText("0.0");
+//            tvY.setText("0.0");
+//            tvZ.setText("0.0");
             mInitialized = true;
         } else {
             float deltaX = Math.abs(mLastX - x);
@@ -145,45 +173,33 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
             mLastX = x;
             mLastY = y;
             mLastZ = z;
-            tvX.setText(Float.toString(deltaX));
-            tvY.setText(Float.toString(deltaY));
-            tvZ.setText(Float.toString(deltaZ));
+//            tvX.setText(Float.toString(deltaX));
+//            tvY.setText(Float.toString(deltaY));
+//            tvZ.setText(Float.toString(deltaZ));
             double magnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
             magnitudes.add(magnitude);
-            if (magnitudes.size() == 10) {
+            if (magnitudes.size() == 20) {
                 double total = 0;
-                for(int i = 0; i < 10; i++) {
+                for(int i = 0; i < 20; i++) {
                         total += magnitudes.get(i);
                 }
-                magnitude_total = total/10;
+                magnitude_total = total/20;
                 magnitudes.clear();
                 TableLayout table = (TableLayout)findViewById(R.id.magnitude_table);
                 TableRow row = new TableRow(this);
                 TextView text = new TextView(this);
-                text.setText(Double.toString(total));
+                text.setText(Double.toString(magnitude_total));
                 row.addView(text);
                 table.addView(row);
                 final Button startstop = (Button)findViewById(R.id.start_stop_button);
-                if(startstop.getText().toString() == "stop") {
+                if(startstop.getText().toString() == "stop workout") {
                     current_mag = magnitude_total;
                     AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                     int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    if(current_mag - previous_mag > threshold) {
-                        if(currentVolume < max_Volume) {
-                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (currentVolume + .3*max_Volume), 0);
-                        }
-                        previous_mag = current_mag;
-                    }
-                    else if (current_mag - previous_mag < -1*threshold) {
-                        if (currentVolume > 0) {
-                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (currentVolume - .2*max_Volume), 0);
-                        }
-                        previous_mag = current_mag;
-                    }
-                    else {
-                    }
-                    if(current_mag == 0) {
-                        audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume/3, 0);
+                    if (current_mag > max_mag) {
+                        audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) max_Volume, 0);
+                    } else {
+                        audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (current_mag * max_Volume / max_mag), 0);
                     }
                 }
 
@@ -195,5 +211,8 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 vol.setText(Double.toString(volume));
             }
         }
+        tvX.setText(Double.toString(max_mag));
+        tvY.setText(Integer.toString((int)current_mag));
+        tvZ.setText(Integer.toString((int)(current_mag * 100 /max_mag)));
     }
 }
