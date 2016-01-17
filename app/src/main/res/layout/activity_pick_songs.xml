@@ -6,4 +6,6 @@
     android:layout_height="match_parent" android:fitsSystemWindows="true"
     tools:context="com.example.jack.fitrhythmapp.PickSongsActivity">
 
+    <include layout="@layout/content_pick_songs" />
+
 </android.support.design.widget.CoordinatorLayout>
