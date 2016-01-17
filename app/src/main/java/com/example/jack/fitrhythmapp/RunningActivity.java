@@ -56,24 +56,24 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
                 max_mag = 4;
                 break;
             case("running"):
-                max_mag = 10;
+                max_mag = 22;
                 break;
             case("push_ups"):
-                max_mag = 2;
+                max_mag = 5;
                 break;
             case("sit_ups"):
-                max_mag = 3;
+                max_mag = 3.5;
                 break;
         }
 
         switch(getIntent().getSerializableExtra("intensity").toString()) {
             case("easy"):
-                max_mag *= .75;
+                max_mag *= .8;
                 break;
             case("medium"):
                 break;
             case("hard"):
-                max_mag *= 1.25;
+                max_mag *= 1.2;
                 break;
         }
 
@@ -178,12 +178,12 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
 //            tvZ.setText(Float.toString(deltaZ));
             double magnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
             magnitudes.add(magnitude);
-            if (magnitudes.size() == 20) {
+            if (magnitudes.size() == 15) {
                 double total = 0;
-                for(int i = 0; i < 20; i++) {
+                for(int i = 0; i < 15; i++) {
                         total += magnitudes.get(i);
                 }
-                magnitude_total = total/20;
+                magnitude_total = total/15;
                 magnitudes.clear();
                 TableLayout table = (TableLayout)findViewById(R.id.magnitude_table);
                 TableRow row = new TableRow(this);
