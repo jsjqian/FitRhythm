@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.app.Activity;
 import android.content.Context;
@@ -77,6 +78,7 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
             tvX.setText(Float.toString(deltaX));
             tvY.setText(Float.toString(deltaY));
             tvZ.setText(Float.toString(deltaZ));
+            Log.i("MyActivity", Float.toString(deltaX) + "," + Float.toString(deltaY) + "," + Float.toString(deltaZ));
         }
     }
 }
