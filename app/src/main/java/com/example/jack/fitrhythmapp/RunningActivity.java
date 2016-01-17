@@ -40,6 +40,7 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
     private float mLastX, mLastY, mLastZ;
     private double max_Volume = 1300;
     private double magnitude_total;
+    private ArrayList<Double> moving_average_array = new ArrayList<Double>();
     private double current_mag, previous_mag;
     private boolean mInitialized;
     private SensorManager mSensorManager;
@@ -61,6 +62,12 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
         quotes.add("''Harder, better, faster, stronger.''");
         quotes.add("''Better sore than sorry.''");
         quotes.add("''Sore. The most satisfying pain.''");
+
+        moving_average_array.add(0.0);
+        moving_average_array.add(0.0);
+        moving_average_array.add(0.0);
+        moving_average_array.add(0.0);
+
         String quote;
         int num = (int)(Math.random() * 5);
         quote = quotes.get(num);
@@ -205,22 +212,30 @@ public class RunningActivity extends AppCompatActivity implements SensorEventLis
 //            tvZ.setText(Float.toString(deltaZ));
             double magnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
             magnitudes.add(magnitude);
-            if (magnitudes.size() == 15) {
+            if (magnitudes.size() == 5) {
                 double total = 0;
-                for(int i = 0; i < 15; i++) {
+                for(int i = 0; i < 5; i++) {
                         total += magnitudes.get(i);
                 }
-                magnitude_total = total/15;
+                magnitude_total = total/5;
                 magnitudes.clear();
                 final Button startstop = (Button)findViewById(R.id.start_stop_button);
                 if(startstop.getText().toString() == "stop workout") {
                     current_mag = magnitude_total;
+                    moving_average_array.add(current_mag);
+                    moving_average_array.remove(0);
+
+                    double moving_average = 0;
+                    for(Double instance: moving_average_array) {
+                        moving_average += instance/4.0;
+                    }
+
                     AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                     int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    if (current_mag > max_mag) {
+                    if (moving_average > max_mag) {
                         audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) max_Volume, 0);
                     } else {
-                        audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (current_mag * max_Volume / max_mag), 0);
+                        audio.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (moving_average * max_Volume / max_mag), 0);
                     }
                 }
 
