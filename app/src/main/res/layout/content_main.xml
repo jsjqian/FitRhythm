@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:background="@drawable/fitRhythmTitle"
+        android:background="@drawable/fit_rhythm_title"
         android:layout_marginBottom="176dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
@@ -44,7 +44,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
+        android:id="@+id/start_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="61dp"
